@@ -1,5 +1,7 @@
-import streamDeck, { action, Coordinates, KeyAction, KeyDownEvent, SingletonAction, WillAppearEvent } from "@elgato/streamdeck";
+import streamDeck, { action, KeyAction, KeyDownEvent, KeyUpEvent, SingletonAction, WillAppearEvent } from "@elgato/streamdeck";
 import { setTimeout } from "timers/promises";
+
+const longPressThreshold: number = 1000 // ms
 
 enum State {
     Ready,
@@ -8,9 +10,6 @@ enum State {
     Done,
 }
 
-/**
- * A play piece for the lights-out game
- */
 @action({ UUID: "dev.davidcorey.block-timer.timer" })
 export class Timer extends SingletonAction<TimerSettings> {
     constructor() {
@@ -36,20 +35,23 @@ export class Timer extends SingletonAction<TimerSettings> {
         }
     }
 
-    /**
-     * Performs a light switch toggle, which toggles the state of the 4 actions that border the pressed action in
-     * each cardinal direction, as well as the action itself
-     */
     override async onKeyDown(event: KeyDownEvent<TimerSettings>): Promise<void> {
-        // We can't access action coordinates if the action is a part of a multi-action
-        if (event.payload.isInMultiAction) {
-            return;
-        }
-
-        await this.transition(event.action, event.payload.settings)
+        event.payload.settings.keyDownAt = new Date().getTime()
+        await event.action.setSettings(event.payload.settings)
     }
 
-    async transition(action: KeyAction<TimerSettings>, settings: TimerSettings) {
+    override async onKeyUp(event: KeyUpEvent<TimerSettings>): Promise<void> {
+        const now = new Date().getTime()
+        const pressDuration = now - event.payload.settings.keyDownAt
+
+        if (pressDuration >= longPressThreshold) {
+            await this.handleLongPress(event.action)
+        } else {
+            await this.handleShortPress(event.action, event.payload.settings)
+        }
+    }
+
+    async handleShortPress(action: KeyAction<TimerSettings>, settings: TimerSettings) {
         switch (settings.state) {
             case State.Ready:
                 await this.start(action, settings)
@@ -60,11 +62,11 @@ export class Timer extends SingletonAction<TimerSettings> {
             case State.Paused:
                 await this.continue(action, settings)
                 break;
-            case State.Done:
-                // TODO: Reset only on long hold
-                await this.reset(action)
-                break;
         }
+    }
+
+    async handleLongPress(action: KeyAction<TimerSettings>) {
+        await this.reset(action)
     }
 
     async start(action: KeyAction<TimerSettings>, settings: TimerSettings) {
@@ -129,4 +131,5 @@ export class Timer extends SingletonAction<TimerSettings> {
 
 type TimerSettings = {
     state: State;
+    keyDownAt: number;
 };
