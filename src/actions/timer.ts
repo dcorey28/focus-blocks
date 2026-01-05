@@ -1,5 +1,5 @@
 import streamDeck, { action, KeyAction, KeyDownEvent, KeyUpEvent, SingletonAction, WillAppearEvent } from "@elgato/streamdeck";
-import { setTimeout } from "timers/promises";
+import play from 'play-sound';
 
 const longPressThreshold: number = 1000 // ms
 const tickInterval: number = 100 // ms
@@ -132,6 +132,7 @@ export class Timer extends SingletonAction<TimerSettings> {
         }
 
         settings.state = State.Done
+        playSound("audio/done.mp3")
         await action.setSettings(settings)
         await action.setTitle('')
         await action.setImage('imgs/actions/timer/done')
@@ -179,6 +180,17 @@ function formatTime(milliseconds: number) {
     }
 
     return `${minutes}:${secondsStr}`;
+}
+
+function playSound(soundFilePath: string): void {
+    const player = play({})
+    player.play(soundFilePath, (err: Error) => {
+        if (err) {
+            console.error('Error playing sound:', err);
+        } else {
+            console.log("Audio finished");
+        }
+    })
 }
 
 type TimerSettings = {
