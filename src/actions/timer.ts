@@ -2,6 +2,7 @@ import streamDeck, { action, KeyAction, KeyDownEvent, KeyUpEvent, SingletonActio
 import { setTimeout } from "timers/promises";
 
 const longPressThreshold: number = 1000 // ms
+const tickInterval: number = 100 // ms
 
 enum State {
     Ready,
@@ -74,9 +75,36 @@ export class Timer extends SingletonAction<TimerSettings> {
             return
         }
 
+        settings.timeRemaining = settings.timeLimit || 65000 // ms
+        this.startCountdown(action, settings)
+    }
+
+    async startCountdown(action: KeyAction<TimerSettings>, settings: TimerSettings) {
         settings.state = State.Running
-        await action.setSettings(settings)
+        await action.setTitle(formatTime(settings.timeRemaining))
         await action.setImage('imgs/actions/timer/running')
+        const interval = setInterval(async () => {
+            const settings = await action.getSettings()
+            settings.timeRemaining -= tickInterval
+
+            if (settings.timeRemaining <= 0) {
+                clearInterval(settings.timerHandle)
+                this.finish(action, settings)
+                return
+            }
+
+            await action.setTitle(formatTime(settings.timeRemaining))
+            await action.setSettings(settings)
+        }, tickInterval)
+        settings.timerHandle = interval[Symbol.toPrimitive]()
+        await action.setSettings(settings)
+    }
+
+    stopCountdown(settings: TimerSettings) {
+        if (settings.timerHandle) {
+            clearInterval(settings.timerHandle)
+            settings.timerHandle = 0
+        }
     }
 
     async pause(action: KeyAction<TimerSettings>, settings: TimerSettings) {
@@ -85,6 +113,7 @@ export class Timer extends SingletonAction<TimerSettings> {
         }
 
         settings.state = State.Paused
+        clearInterval(settings.timerHandle)
         await action.setSettings(settings)
         await action.setImage('imgs/actions/timer/paused')
     }
@@ -94,23 +123,31 @@ export class Timer extends SingletonAction<TimerSettings> {
             return
         }
 
-        settings.state = State.Running
+        this.startCountdown(action, settings)
+    }
+
+    async finish(action: KeyAction<TimerSettings>, settings: TimerSettings) {
+        if (settings.state == State.Done) {
+            return
+        }
+
+        settings.state = State.Done
         await action.setSettings(settings)
-        await action.setImage('imgs/actions/timer/running')
+        await action.setTitle('')
+        await action.setImage('imgs/actions/timer/done')
     }
 
     async reset(action: KeyAction<TimerSettings>) {
         const settings = await action.getSettings()
 
         if (settings.state == State.Ready) {
-            streamDeck.logger.debug(`skipping action ${action.id} because is ready`)
             return
         }
-
         settings.state = State.Ready
+        this.stopCountdown(settings)
         await action.setSettings(settings)
+        await action.setTitle('')
         await action.setImage('imgs/actions/timer/ready')
-        streamDeck.logger.debug(`reset of ${action.id} successful`)
     }
 
     async resetAll(deviceId: string) {
@@ -129,7 +166,25 @@ export class Timer extends SingletonAction<TimerSettings> {
     }
 }
 
+function formatTime(milliseconds: number) {
+    const minutes = Math.floor((milliseconds + 1000) / 60_000);
+    const seconds = Math.ceil(milliseconds / 1000) % 60;
+
+    let secondsStr: string
+
+    if (seconds < 10) {
+        secondsStr = `0${seconds}`;
+    } else {
+        secondsStr = `${seconds}`
+    }
+
+    return `${minutes}:${secondsStr}`;
+}
+
 type TimerSettings = {
-    state: State;
-    keyDownAt: number;
+    state: State
+    timeLimit: number
+    timeRemaining: number
+    keyDownAt: number
+    timerHandle: number
 };
