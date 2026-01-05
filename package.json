@@ -1,7 +1,7 @@
 {
     "scripts": {
         "build": "rollup -c",
-        "watch": "rollup -c -w --watch.onEnd=\"streamdeck restart dev.davidcorey.block-timer\""
+        "watch": "rollup -c -w --watch.onEnd=\"streamdeck restart dev.davidcorey.focus-blocks\""
     },
     "type": "module",
     "devDependencies": {

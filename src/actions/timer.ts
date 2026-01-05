@@ -11,7 +11,7 @@ enum State {
     Done,
 }
 
-@action({ UUID: "dev.davidcorey.block-timer.timer" })
+@action({ UUID: "dev.davidcorey.focus-blocks.timer" })
 export class Timer extends SingletonAction<TimerSettings> {
     constructor() {
         super();

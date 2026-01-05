@@ -5,7 +5,7 @@ import { Timer } from "./timer";
 /**
  * Resets the current state of the game to a fresh, randomized board
  */
-@action({ UUID: "dev.davidcorey.block-timer.reset" })
+@action({ UUID: "dev.davidcorey.focus-blocks.reset" })
 export class Reset extends SingletonAction {
     timer: Timer;
 

@@ -6,7 +6,7 @@ import path from "node:path";
 import url from "node:url";
 
 const isWatching = !!process.env.ROLLUP_WATCH;
-const sdPlugin = "dev.davidcorey.block-timer.sdPlugin";
+const sdPlugin = "dev.davidcorey.focus-blocks.sdPlugin";
 
 /**
  * @type {import('rollup').RollupOptions}

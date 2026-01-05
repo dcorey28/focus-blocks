@@ -5,7 +5,7 @@
 	"Actions": [
 		{
 			"Name": "Timer",
-			"UUID": "dev.davidcorey.block-timer.timer",
+			"UUID": "dev.davidcorey.focus-blocks.timer",
 			"Icon": "imgs/actions/timer/icon",
 			"Tooltip": "A timer representing a single focus block",
 			"SupportedInMultiActions": false,
@@ -24,7 +24,7 @@
 		},
 		{
 			"Name": "Reset",
-			"UUID": "dev.davidcorey.block-timer.reset",
+			"UUID": "dev.davidcorey.focus-blocks.reset",
 			"Icon": "imgs/actions/reset/icon",
 			"Tooltip": "Resets all timers",
 			"SupportedInMultiActions": false,
@@ -63,5 +63,5 @@
 		"Version": "20",
 		"Debug": "enabled"
 	},
-	"UUID": "dev.davidcorey.block-timer"
+	"UUID": "dev.davidcorey.focus-blocks"
 }
