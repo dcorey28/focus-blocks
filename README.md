@@ -5,6 +5,6 @@ A timer plugin for tracking blocks of focus time.
 - [x] Timer runs during `running` state
 - [x] Timer transitions to `done` state
 - [x] Long hold resets timer
-- [ ] Timer animation
+- [x] Timer animation
 - [ ] Finished sound
 - [ ] Settings are configurable (Timer duration, end sound)

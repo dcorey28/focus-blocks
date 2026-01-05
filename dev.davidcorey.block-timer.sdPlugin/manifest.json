@@ -16,7 +16,9 @@
 			"States": [
 				{
 					"Image": "imgs/actions/timer/ready",
-					"TitleAlignment": "middle"
+					"TitleAlignment": "middle",
+					"FontSize": 18,
+					"TitleColor": "#FFFFFF"
 				}
 			]
 		},

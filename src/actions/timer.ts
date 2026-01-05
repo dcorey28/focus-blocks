@@ -75,7 +75,7 @@ export class Timer extends SingletonAction<TimerSettings> {
             return
         }
 
-        settings.timeRemaining = settings.timeLimit || 65000 // ms
+        settings.timeRemaining = settings.timeLimit || 3_000_000 // ms
         this.startCountdown(action, settings)
     }
 
