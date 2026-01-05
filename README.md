@@ -1,4 +1,4 @@
-# Block Timer
+# Focus Blocks
 A timer plugin for tracking blocks of focus time.
 
 ## TODO
