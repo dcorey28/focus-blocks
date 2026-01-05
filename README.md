@@ -8,3 +8,4 @@ A timer plugin for tracking blocks of focus time.
 - [x] Timer animation
 - [x] Finished sound
 - [ ] Settings are configurable (Timer duration, end sound)
+- [ ] Ensure timers will run and complete in background,even if not currently displayed

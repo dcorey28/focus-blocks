@@ -22,7 +22,9 @@ export class Timer extends SingletonAction<TimerSettings> {
             return
         }
 
-        await this.reset(ev.action)
+        if (ev.payload.settings.state == undefined) {
+            await this.reset(ev.action)
+        }
     }
 
     /**
