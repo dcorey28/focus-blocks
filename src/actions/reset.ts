@@ -3,7 +3,7 @@ import streamDeck, { action, KeyDownEvent, SingletonAction } from "@elgato/strea
 import { Timer } from "./timer";
 
 /**
- * Resets the current state of the game to a fresh, randomized board
+ * Resets the current state of all timers on the same page as the reset button.
  */
 @action({ UUID: "dev.davidcorey.focus-blocks.reset" })
 export class Reset extends SingletonAction {
@@ -15,7 +15,7 @@ export class Reset extends SingletonAction {
     }
 
     /**
-     * Resets the game
+     * Resets all timers.
      */
     override async onKeyDown(ev: KeyDownEvent): Promise<void> {
         streamDeck.logger.debug(`resetAll for ${ev.action.device.id}`)
