@@ -1,5 +1,6 @@
 # Focus Blocks
 A timer plugin for tracking blocks of focus time. Each StreamDeck key becomes a focus block. Get them all green to complete your focus goal for the day.
+
 ![A screenshot of a virtual StreamDeck with timer keys in various states.](/docs/media/block-timers.png)
 
 ## How it works
